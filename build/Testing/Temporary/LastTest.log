@@ -1,0 +1,39 @@
+Start testing: May 14 10:20 CEST
+----------------------------------------------------------
+1/1 Testing: ManagerTest.constructor_sizeok
+1/1 Test: ManagerTest.constructor_sizeok
+Command: "/home/ayesha/VDSProject_Group2/build/src/test/VDSProject_test" "--gtest_filter=ManagerTest.constructor_sizeok" "--gtest_also_run_disabled_tests"
+Directory: /home/ayesha/VDSProject_Group2/build/src/test
+"ManagerTest.constructor_sizeok" start time: May 14 10:20 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = ManagerTest.constructor_sizeok
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ManagerTest
+[ RUN      ] ManagerTest.constructor_sizeok
+/home/ayesha/VDSProject_Group2/src/test/main_test.cpp:15: Failure
+Expected equality of these values:
+  2
+  table_size
+    Which is: 0
+
+[  FAILED  ] ManagerTest.constructor_sizeok (0 ms)
+[----------] 1 test from ManagerTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] ManagerTest.constructor_sizeok
+
+ 1 FAILED TEST
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"ManagerTest.constructor_sizeok" end time: May 14 10:20 CEST
+"ManagerTest.constructor_sizeok" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: May 14 10:20 CEST

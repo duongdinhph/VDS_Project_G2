@@ -1,0 +1,3 @@
+ManagerTest.constructor_sizeok 2 0
+---
+ManagerTest.constructor_sizeok

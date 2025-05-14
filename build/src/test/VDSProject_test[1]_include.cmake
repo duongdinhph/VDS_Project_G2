@@ -1,0 +1,5 @@
+if(EXISTS "/home/ayesha/VDSProject_Group2/build/src/test/VDSProject_test[1]_tests.cmake")
+  include("/home/ayesha/VDSProject_Group2/build/src/test/VDSProject_test[1]_tests.cmake")
+else()
+  add_test(VDSProject_test_NOT_BUILT VDSProject_test_NOT_BUILT)
+endif()
