@@ -17,7 +17,11 @@ Manager::Manager()
 
 BDD_ID Manager::createVar(const std::string &label)
 {
-    return 0;
+    BDD_ID table_size = unique_table.size();
+    Node new_node(table_size, label, 1, 0, table_size);
+    unique_table.push_back(new_node);
+
+    return table_size;
 }
 
 const BDD_ID &Manager::True()
