@@ -66,6 +66,11 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){}
 
 void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){}
 
-size_t Manager::uniqueTableSize(){}
+size_t Manager::uniqueTableSize()
+{
+    size_t no_nodes;
+    no_nodes = unique_table.size();
+    return no_nodes;
+}
 
 void Manager::visualizeBDD(std::string filepath, BDD_ID &root){}

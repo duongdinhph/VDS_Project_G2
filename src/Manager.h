@@ -80,6 +80,11 @@ namespace ClassProject {
 
             void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) override;
 
+            /**
+             * Gives the number of Nodes existing in unique table
+             *
+             * @return No. of Nodes currently existing
+             */ 
             size_t uniqueTableSize() override;
 
             void visualizeBDD(std::string filepath, BDD_ID &root) override;
