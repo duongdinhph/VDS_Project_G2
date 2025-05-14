@@ -8,4 +8,13 @@
 #include <gtest/gtest.h>
 #include "../Manager.h"
 
+using namespace ClassProject;
+
+class ManagerTest : public testing::Test {
+public:
+
+    Manager managerTest;
+
+};
+
 #endif
