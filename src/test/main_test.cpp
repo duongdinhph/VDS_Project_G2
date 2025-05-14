@@ -10,9 +10,18 @@ using namespace ClassProject;
 
 /// Manager Constructor
 TEST_F(ManagerTest, constructor_sizeok){
-
     BDD_ID table_size = managerTest.unique_table.size();
     EXPECT_EQ(2,table_size);
+}
+
+/// True Node
+TEST_F(ManagerTest, trueok){
+    EXPECT_EQ(1,managerTest.True());
+}
+
+/// False Node
+TEST_F(ManagerTest, falseok){
+    EXPECT_EQ(0,managerTest.False());
 }
 
 int main(int argc, char* argv[])
