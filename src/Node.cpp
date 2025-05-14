@@ -1,12 +1,13 @@
 #include "Node.h"
 
-using namespace std;
-
 namespace ClassProject{
 
-    Node::Node(BDD_ID id, string &label, BDD_ID high, BDD_ID low, BDD_ID top_var)
-    : id(id), label(label), high(high), low(low), top_var(top_var) {
-        
+    Node::Node(BDD_ID c_id, const std::string &c_label, BDD_ID c_high, BDD_ID c_low, BDD_ID c_top_var) {
+        id = c_id;
+        label = c_label;
+        high = c_high;
+        low = c_low;
+        top_var = c_top_var;
     }
 
 };

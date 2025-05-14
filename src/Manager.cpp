@@ -1,11 +1,17 @@
 #include "Manager.h"
 
 using namespace ClassProject;
-using namespace std;
 
 Manager::Manager()
 {
+    std::string false_str = "FALSE";
+    std::string true_str  = "TRUE";
 
+    Node false_node(0,false_str,0,0,0);
+    Node true_node(1,true_str,1,1,1);
+    
+    unique_table.push_back(false_node);
+    unique_table.push_back(true_node);
 }
 
 
