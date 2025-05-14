@@ -20,9 +20,15 @@ BDD_ID Manager::createVar(const std::string &label)
     return 0;
 }
 
-const BDD_ID &Manager::True(){}
+const BDD_ID &Manager::True()
+{
+    return unique_table[1].id;
+}
 
-const BDD_ID &Manager::False(){}
+const BDD_ID &Manager::False()
+{
+    return unique_table[0].id;
+}
 
 bool Manager::isConstant(BDD_ID f){}
 

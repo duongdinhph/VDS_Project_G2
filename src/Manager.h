@@ -30,8 +30,18 @@ namespace ClassProject {
              */
             BDD_ID createVar(const std::string &label) override;
 
+            /**
+             * Gets id of True node (1)
+             *
+             * @return ID of True Node
+             */     
             const BDD_ID &True() override;
 
+            /**
+             * Gets id of False node (0)
+             *
+             * @return ID of False Node
+             */ 
             const BDD_ID &False() override;
 
             bool isConstant(BDD_ID f) override;
