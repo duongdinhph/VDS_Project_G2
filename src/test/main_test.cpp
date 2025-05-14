@@ -24,6 +24,12 @@ TEST_F(ManagerTest, falseok){
     EXPECT_EQ(0,managerTest.False());
 }
 
+/// Manager Size
+TEST_F(ManagerTest, manager_sizeok){
+    BDD_ID table_size = managerTest.uniqueTableSize();
+    EXPECT_EQ(2,table_size);
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
