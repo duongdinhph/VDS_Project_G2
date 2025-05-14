@@ -5,6 +5,7 @@
 
 #include "Tests.h"
 #include <gtest/gtest.h>
+#include <string>
 
 using namespace ClassProject;
 
@@ -29,6 +30,27 @@ TEST_F(ManagerTest, manager_sizeok){
     BDD_ID table_size = managerTest.uniqueTableSize();
     EXPECT_EQ(2,table_size);
 }
+
+/// Unique Table Size
+TEST_F(TableTest, size_create_var){
+    BDD_ID table_size = tableTest.uniqueTableSize();
+    EXPECT_EQ(5,table_size);
+}
+
+/// Create Variable
+TEST_F(TableTest, check_create_var){
+    std::string labels[3] = {"a", "b", "c"};
+
+    for (int i=2; i<=4; i++){
+        EXPECT_EQ(i,tableTest.unique_table[i].id);
+        EXPECT_EQ(labels[i],tableTest.unique_table[i].label);
+        EXPECT_EQ(1,tableTest.unique_table[i].high);
+        EXPECT_EQ(0,tableTest.unique_table[i].low);
+        EXPECT_EQ(i,tableTest.unique_table[i].top_var);
+    }
+}
+
+
 
 int main(int argc, char* argv[])
 {

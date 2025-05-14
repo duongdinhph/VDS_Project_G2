@@ -15,4 +15,16 @@ public:
     Manager managerTest;
 };
 
+class TableTest : public testing::Test {
+public:
+    Manager tableTest;
+
+    void SetUp() override
+    {
+        tableTest.createVar("a");
+        tableTest.createVar("b");
+        tableTest.createVar("c");
+    }
+};
+
 #endif
