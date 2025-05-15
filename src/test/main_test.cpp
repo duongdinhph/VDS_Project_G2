@@ -41,6 +41,15 @@ TEST_F(ManagerTest, manager_size_test){
     EXPECT_EQ(2,table_size);
 }
 
+/// Create Variable
+TEST_F(ManagerTest, create_var_manager_test){
+    EXPECT_EQ(2,managerTest.uniqueTableSize());
+    managerTest.createVar("a");
+    EXPECT_EQ(3,managerTest.uniqueTableSize());
+    managerTest.createVar("b");
+    EXPECT_EQ(4,managerTest.uniqueTableSize());
+}
+
 /// Unique Table Size
 TEST_F(TableTest, size_create_var_test){
     BDD_ID table_size = tableTest.uniqueTableSize();
@@ -91,9 +100,14 @@ TEST_F(TableTest, top_var_test){
 /// Negation
 TEST_F(TableTest, neg_test){
     for (int i = 2; i <= 4; i++){
-        BDD_ID neg_id = tableTest.neg(i);
-        EXPECT_EQ(tableTest.unique_table[i].high, tableTest.unique_table[neg_id].low);
-        EXPECT_EQ(tableTest.unique_table[i].low, tableTest.unique_table[neg_id].high);  
+        BDD_ID neg_id_new = tableTest.neg(i);
+        EXPECT_EQ(tableTest.unique_table[i].high, tableTest.unique_table[neg_id_new].low);
+        EXPECT_EQ(tableTest.unique_table[i].low, tableTest.unique_table[neg_id_new].high);  
+        
+        BDD_ID neg_id_exists = tableTest.neg(i);
+        EXPECT_EQ(tableTest.unique_table[i].high, tableTest.unique_table[neg_id_exists].low);
+        EXPECT_EQ(tableTest.unique_table[i].low, tableTest.unique_table[neg_id_exists].high); 
+        EXPECT_EQ(neg_id_new, neg_id_exists); 
     }
 }
 
