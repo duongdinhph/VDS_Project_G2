@@ -60,7 +60,15 @@ TEST_F(TableTest, check_create_var_test){
     }
 }
 
+/// Is Constant
+TEST_F(TableTest, constant_test){
+    bool output[5] = {true, true, false, false, false};
 
+    for (int i = 0; i <= 4; i++){
+        BDD_ID current_id = tableTest.unique_table[i].id;
+        EXPECT_EQ(output[i], tableTest.isConstant(current_id));   
+    }
+}
 
 int main(int argc, char* argv[])
 {
