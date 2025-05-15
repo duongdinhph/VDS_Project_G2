@@ -4,11 +4,8 @@ using namespace ClassProject;
 
 Manager::Manager()
 {
-    std::string false_str = "FALSE";
-    std::string true_str  = "TRUE";
-
-    Node false_node(0,false_str,0,0,0);
-    Node true_node(1,true_str,1,1,1);
+    Node false_node(FALSE_NODE,"FALSE",FALSE_NODE,FALSE_NODE,FALSE_NODE);
+    Node true_node(TRUE_NODE,"TRUE",TRUE_NODE,TRUE_NODE,TRUE_NODE);
     
     unique_table.push_back(false_node);
     unique_table.push_back(true_node);
@@ -17,7 +14,7 @@ Manager::Manager()
 BDD_ID Manager::createVar(const std::string &label)
 {
     BDD_ID table_size = unique_table.size();
-    Node new_node(table_size, label, 1, 0, table_size);
+    Node new_node(table_size, label, TRUE_NODE, FALSE_NODE, table_size);
     unique_table.push_back(new_node);
 
     return table_size;
@@ -25,17 +22,17 @@ BDD_ID Manager::createVar(const std::string &label)
 
 const BDD_ID &Manager::True()
 {
-    return unique_table[1].id;
+    return unique_table[TRUE_NODE].id;
 }
 
 const BDD_ID &Manager::False()
 {
-    return unique_table[0].id;
+    return unique_table[FALSE_NODE].id;
 }
 
 bool Manager::isConstant(BDD_ID f)
 {
-    if (unique_table[f].id == 0 || unique_table[f].id == 1)
+    if (unique_table[f].id == FALSE_NODE || unique_table[f].id == TRUE_NODE)
     {
         return true;
     }
@@ -47,7 +44,7 @@ bool Manager::isConstant(BDD_ID f)
 
 bool Manager::isVariable(BDD_ID x)
 {
-    if (unique_table[x].high == 1 && unique_table[x].low == 0)
+    if (unique_table[x].high == TRUE_NODE && unique_table[x].low == FALSE_NODE)
     {
         return true;
     }
@@ -81,7 +78,10 @@ BDD_ID Manager::or2(BDD_ID a, BDD_ID b){}
 
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){}
 
-BDD_ID Manager::neg(BDD_ID a){}
+BDD_ID Manager::neg(BDD_ID a)
+{
+
+}
 
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){}
 

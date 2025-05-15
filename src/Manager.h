@@ -7,6 +7,7 @@
 
 #include "ManagerInterface.h"
 #include <vector>
+#include <unordered_map>
 #include "Node.h"
 
 
@@ -15,6 +16,11 @@ namespace ClassProject {
     class Manager : public ManagerInterface {
         public:
             std::vector<Node> unique_table;
+
+            BDD_ID TRUE_NODE = 1;
+            BDD_ID FALSE_NODE = 0;
+
+            std::unordered_map<std::string, BDD_ID> computed_table;
 
             /**
              * Constructor of Manager class
