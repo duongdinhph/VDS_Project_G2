@@ -80,7 +80,22 @@ BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){}
 
 BDD_ID Manager::neg(BDD_ID a)
 {
+    std::string fgh = std::to_string(a) + "-0-1";
+    std::string neg_a_label = "neg-" + std::to_string(a);
 
+    auto it = computed_table.find(fgh);
+    if (it != computed_table.end()) {
+        // Key exists, return the stored BDD_ID
+        return it->second;
+    }
+
+    BDD_ID table_size = unique_table.size();
+    Node neg_node(table_size, neg_a_label, FALSE_NODE, TRUE_NODE, table_size);
+    unique_table.push_back(neg_node);
+
+    computed_table[fgh] = table_size;
+
+    return table_size;
 }
 
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){}
