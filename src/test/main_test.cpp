@@ -80,6 +80,14 @@ TEST_F(TableTest, variable_test){
     }
 }
 
+/// Top Variable
+TEST_F(TableTest, top_var_test){
+    for (int i = 2; i <= 4; i++){
+        BDD_ID current_id = tableTest.unique_table[i].id;
+        EXPECT_EQ(i, tableTest.topVar(current_id));   
+    }
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
