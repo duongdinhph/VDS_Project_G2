@@ -70,6 +70,16 @@ TEST_F(TableTest, constant_test){
     }
 }
 
+/// Is Variable
+TEST_F(TableTest, variable_test){
+    bool output[5] = {false, false, true, true, true};
+
+    for (int i = 0; i <= 4; i++){
+        BDD_ID current_id = tableTest.unique_table[i].id;
+        EXPECT_EQ(output[i], tableTest.isVariable(current_id));   
+    }
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
