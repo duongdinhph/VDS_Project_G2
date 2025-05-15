@@ -88,6 +88,15 @@ TEST_F(TableTest, top_var_test){
     }
 }
 
+/// Negation
+TEST_F(TableTest, neg_test){
+    for (int i = 2; i <= 4; i++){
+        BDD_ID neg_id = tableTest.neg(i);
+        EXPECT_EQ(tableTest.unique_table[i].high, tableTest.unique_table[neg_id].low);
+        EXPECT_EQ(tableTest.unique_table[i].low, tableTest.unique_table[neg_id].high);  
+    }
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
