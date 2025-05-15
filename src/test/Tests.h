@@ -13,6 +13,8 @@ using namespace ClassProject;
 class ManagerTest : public testing::Test {
 public:
     Manager managerTest;
+    BDD_ID TRUE_ID = 1;
+    BDD_ID FALSE_ID = 0; 
 };
 
 class TableTest : public testing::Test {
@@ -25,6 +27,9 @@ public:
         tableTest.createVar("b");
         tableTest.createVar("c");
     }
+
+    BDD_ID TRUE_ID = 1;
+    BDD_ID FALSE_ID = 0; 
 };
 
 #endif

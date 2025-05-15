@@ -14,7 +14,6 @@ Manager::Manager()
     unique_table.push_back(true_node);
 }
 
-
 BDD_ID Manager::createVar(const std::string &label)
 {
     BDD_ID table_size = unique_table.size();
@@ -63,7 +62,10 @@ BDD_ID Manager::topVar(BDD_ID f)
     return unique_table[f].top_var;
 }
 
-BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){}
+BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
+{
+    
+}
 
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){}
 

@@ -18,21 +18,21 @@ TEST_F(ManagerTest, constructor_size_test){
 /// True Node
 TEST_F(ManagerTest, true_test){
     BDD_ID True_ID = managerTest.True();
-    EXPECT_EQ(1,True_ID);
+    EXPECT_EQ(TRUE_ID,True_ID);
     EXPECT_EQ("TRUE",managerTest.unique_table[True_ID].label);
-    EXPECT_EQ(1,managerTest.unique_table[True_ID].high);
-    EXPECT_EQ(1,managerTest.unique_table[True_ID].low);
-    EXPECT_EQ(1,managerTest.unique_table[True_ID].top_var);
+    EXPECT_EQ(TRUE_ID,managerTest.unique_table[True_ID].high);
+    EXPECT_EQ(TRUE_ID,managerTest.unique_table[True_ID].low);
+    EXPECT_EQ(TRUE_ID,managerTest.unique_table[True_ID].top_var);
 }
 
 /// False Node
 TEST_F(ManagerTest, false_test){
     BDD_ID False_ID = managerTest.False();
-    EXPECT_EQ(0,False_ID);
+    EXPECT_EQ(FALSE_ID,False_ID);
     EXPECT_EQ("FALSE",managerTest.unique_table[False_ID].label);
-    EXPECT_EQ(0,managerTest.unique_table[False_ID].high);
-    EXPECT_EQ(0,managerTest.unique_table[False_ID].low);
-    EXPECT_EQ(0,managerTest.unique_table[False_ID].top_var);
+    EXPECT_EQ(FALSE_ID,managerTest.unique_table[False_ID].high);
+    EXPECT_EQ(FALSE_ID,managerTest.unique_table[False_ID].low);
+    EXPECT_EQ(FALSE_ID,managerTest.unique_table[False_ID].top_var);
 }
 
 /// Manager Size
@@ -54,8 +54,8 @@ TEST_F(TableTest, check_create_var_test){
     for (int i = 2; i <= 4; i++){
         EXPECT_EQ(i,tableTest.unique_table[i].id);
         EXPECT_EQ(labels[i - 2],tableTest.unique_table[i].label);
-        EXPECT_EQ(1,tableTest.unique_table[i].high);
-        EXPECT_EQ(0,tableTest.unique_table[i].low);
+        EXPECT_EQ(TRUE_ID,tableTest.unique_table[i].high);
+        EXPECT_EQ(FALSE_ID,tableTest.unique_table[i].low);
         EXPECT_EQ(i,tableTest.unique_table[i].top_var);
     }
 }
