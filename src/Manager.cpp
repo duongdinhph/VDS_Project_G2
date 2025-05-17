@@ -255,7 +255,10 @@ BDD_ID Manager::neg(BDD_ID a)
     return table_size;
 }
 
-BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){}
+BDD_ID Manager::nand2(BDD_ID a, BDD_ID b)
+{
+    return ite (a, neg(b), TRUE_NODE);
+}
 
 BDD_ID Manager::nor2(BDD_ID a, BDD_ID b)
 {
