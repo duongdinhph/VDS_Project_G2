@@ -111,6 +111,7 @@ TEST_F(TableTest, neg_test){
     }
 }
 
+// If-Then-Else
 TEST_F(ITETest, ite_test){   
     BDD_ID A_ID = iteTest.createVar("a");
     BDD_ID B_ID = iteTest.createVar("b");
@@ -142,7 +143,7 @@ TEST_F(ITETest, ite_test){
     EXPECT_EQ(FALSE_ID, iteTest.unique_table[ite].low);
     EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);
 
-     // c*d
+    // c*d
     ite = iteTest.ite(C_ID, D_ID, FALSE_ID);
     BDD_ID expected_id_C_AND_D = iteTest.uniqueTableSize()-1;
 
@@ -180,6 +181,7 @@ TEST_F(ITETest, ite_test){
     EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);   
 }
 
+// Co-factor True
 TEST_F(ITETest, co_factor_true_test){
     BDD_ID A_ID = iteTest.createVar("a");
     BDD_ID B_ID = iteTest.createVar("b");
@@ -212,6 +214,7 @@ TEST_F(ITETest, co_factor_true_test){
 
 }
 
+// Co-factor False
 TEST_F(ITETest, co_factor_false_test){
     BDD_ID A_ID = iteTest.createVar("a");
     BDD_ID B_ID = iteTest.createVar("b");
@@ -235,13 +238,34 @@ TEST_F(ITETest, co_factor_false_test){
     EXPECT_EQ(iteTest.coFactorFalse(expected_id_output-1), expected_id_C_AND_D);
     EXPECT_EQ(iteTest.coFactorFalse(expected_id_output), expected_id_C_AND_D);
 
-    
+
     // With two arguments
     EXPECT_EQ(iteTest.coFactorFalse(expected_id_A_AND_B, A_ID), FALSE_ID); 
     EXPECT_EQ(iteTest.coFactorFalse(expected_id_C_AND_D, C_ID), FALSE_ID);   
     EXPECT_EQ(iteTest.coFactorFalse(expected_id_C_AND_D, A_ID), expected_id_C_AND_D);    
     EXPECT_EQ(iteTest.coFactorFalse(expected_id_C_AND_D, B_ID), expected_id_C_AND_D);   
 
+}
+
+// AND
+TEST_F(GateTest, and_test){
+    // a*b
+    BDD_ID ite = gateTest.and2(A_ID, B_ID);
+    BDD_ID expected_id_A_AND_B = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_A_AND_B, ite);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite].high);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var);
+
+    // c*d
+    ite = gateTest.and2(C_ID, D_ID);
+    BDD_ID expected_id_C_AND_D = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_C_AND_D, ite);
+    EXPECT_EQ(D_ID, gateTest.unique_table[ite].high);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].low);
+    EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
 }
 
 int main(int argc, char* argv[])

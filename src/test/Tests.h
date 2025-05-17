@@ -40,4 +40,17 @@ public:
     BDD_ID FALSE_ID = 0; 
 };
 
+class GateTest : public testing::Test {
+public:
+    Manager gateTest;
+
+    BDD_ID A_ID = gateTest.createVar("a");
+    BDD_ID B_ID = gateTest.createVar("b");
+    BDD_ID C_ID = gateTest.createVar("c");
+    BDD_ID D_ID = gateTest.createVar("d");
+
+    BDD_ID TRUE_ID = 1;
+    BDD_ID FALSE_ID = 0; 
+};
+
 #endif
