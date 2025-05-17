@@ -331,6 +331,27 @@ TEST_F(GateTest, xnor_test){
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
 }
 
+// NOR
+TEST_F(GateTest, nor_test){
+    // a NOR b
+    BDD_ID ite = gateTest.nor2(A_ID, B_ID);
+    BDD_ID expected_id_A_NOR_B = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_A_NOR_B, ite);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_A_NOR_B-1, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var);
+
+    // c NOR d
+    ite = gateTest.nor2(C_ID, D_ID);
+    BDD_ID expected_id_C_NOR_D = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_C_NOR_D, ite);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_C_NOR_D-1, gateTest.unique_table[ite].low);
+    EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
