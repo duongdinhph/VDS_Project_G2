@@ -268,6 +268,27 @@ TEST_F(GateTest, and_test){
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
 }
 
+// OR
+TEST_F(GateTest, or_test){
+    // a+b
+    BDD_ID ite = gateTest.or2(A_ID, B_ID);
+    BDD_ID expected_id_A_OR_B = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_A_OR_B, ite);
+    EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite].high);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var);
+
+    // c+d
+    ite = gateTest.or2(C_ID, D_ID);
+    BDD_ID expected_id_C_OR_D = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_C_OR_D, ite);
+    EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite].high);
+    EXPECT_EQ(D_ID, gateTest.unique_table[ite].low);
+    EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
