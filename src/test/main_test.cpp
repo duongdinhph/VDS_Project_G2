@@ -111,6 +111,67 @@ TEST_F(TableTest, neg_test){
     }
 }
 
+TEST_F(ITETest, ite_test){   
+    BDD_ID A_ID = iteTest.createVar("a");
+    BDD_ID B_ID = iteTest.createVar("b");
+    BDD_ID C_ID = iteTest.createVar("c");
+    BDD_ID D_ID = iteTest.createVar("d");
+
+    //Terminal cases
+    BDD_ID ite = iteTest.ite(TRUE_ID, A_ID, B_ID);
+    EXPECT_EQ(A_ID,ite);
+
+    ite = iteTest.ite(FALSE_ID, A_ID, B_ID);
+    EXPECT_EQ(B_ID,ite);
+
+    ite = iteTest.ite(A_ID, TRUE_ID, FALSE_ID);
+    EXPECT_EQ(A_ID,ite);
+
+    ite = iteTest.ite(A_ID, B_ID, B_ID);
+    EXPECT_EQ(B_ID,ite);
+
+    ite = iteTest.ite(A_ID, FALSE_ID, TRUE_ID);
+    EXPECT_EQ(iteTest.neg(A_ID),ite);
+
+    // a*b
+    ite = iteTest.ite(A_ID, B_ID, FALSE_ID);
+    BDD_ID expected_id_A_AND_B = iteTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_A_AND_B, ite);
+    EXPECT_EQ(B_ID, iteTest.unique_table[ite].high);
+    EXPECT_EQ(FALSE_ID, iteTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);
+
+     // c*d
+    ite = iteTest.ite(C_ID, D_ID, FALSE_ID);
+    BDD_ID expected_id_C_AND_D = iteTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_C_AND_D, ite);
+    EXPECT_EQ(D_ID, iteTest.unique_table[ite].high);
+    EXPECT_EQ(FALSE_ID, iteTest.unique_table[ite].low);
+    EXPECT_EQ(C_ID, iteTest.unique_table[ite].top_var);  
+    
+    // expected_id_A_AND_B + expected_id_C_AND_D
+    ite = iteTest.ite(expected_id_A_AND_B, TRUE_ID, expected_id_C_AND_D);
+
+    // Checking intermediate node
+    BDD_ID expected_id_intermediate_output = iteTest.uniqueTableSize()-2;
+
+    EXPECT_EQ(expected_id_intermediate_output, ite-1);
+    EXPECT_EQ(TRUE_ID, iteTest.unique_table[ite-1].high);
+    EXPECT_EQ(expected_id_C_AND_D, iteTest.unique_table[ite-1].low);
+    EXPECT_EQ(B_ID, iteTest.unique_table[ite-1].top_var); 
+    
+    // Checking final output node
+    BDD_ID expected_id_output = iteTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_output, ite);
+    EXPECT_EQ(expected_id_intermediate_output, iteTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_C_AND_D, iteTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);   
+}
+
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);

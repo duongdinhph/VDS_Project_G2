@@ -32,4 +32,12 @@ public:
     BDD_ID FALSE_ID = 0; 
 };
 
+class ITETest : public testing::Test {
+public:
+    Manager iteTest;
+
+    BDD_ID TRUE_ID = 1;
+    BDD_ID FALSE_ID = 0; 
+};
+
 #endif
