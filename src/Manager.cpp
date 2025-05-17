@@ -221,7 +221,10 @@ BDD_ID Manager::and2(BDD_ID a, BDD_ID b)
     return ite (a, b, FALSE_NODE);
 }
 
-BDD_ID Manager::or2(BDD_ID a, BDD_ID b){}
+BDD_ID Manager::or2(BDD_ID a, BDD_ID b)
+{
+    return ite (a, TRUE_NODE, b);
+}
 
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){}
 
