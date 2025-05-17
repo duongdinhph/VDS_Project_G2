@@ -257,7 +257,10 @@ BDD_ID Manager::neg(BDD_ID a)
 
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){}
 
-BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){}
+BDD_ID Manager::nor2(BDD_ID a, BDD_ID b)
+{
+    return ite (a, FALSE_NODE, neg(b));
+}
 
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b)
 {
