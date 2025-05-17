@@ -162,15 +162,87 @@ TEST_F(ITETest, ite_test){
     EXPECT_EQ(expected_id_C_AND_D, iteTest.unique_table[ite-1].low);
     EXPECT_EQ(B_ID, iteTest.unique_table[ite-1].top_var); 
     
-    // Checking final output node
+    // Checking output node
     BDD_ID expected_id_output = iteTest.uniqueTableSize()-1;
 
     EXPECT_EQ(expected_id_output, ite);
     EXPECT_EQ(expected_id_intermediate_output, iteTest.unique_table[ite].high);
     EXPECT_EQ(expected_id_C_AND_D, iteTest.unique_table[ite].low);
     EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);   
+
+    // Negation of output node
+    ite = iteTest.ite(expected_id_output, FALSE_ID, TRUE_ID);
+    BDD_ID expected_id_neg_output = iteTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_neg_output, ite);
+    EXPECT_EQ(expected_id_C_AND_D, iteTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_intermediate_output, iteTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);   
 }
 
+TEST_F(ITETest, co_factor_true_test){
+    BDD_ID A_ID = iteTest.createVar("a");
+    BDD_ID B_ID = iteTest.createVar("b");
+    BDD_ID C_ID = iteTest.createVar("c");
+    BDD_ID D_ID = iteTest.createVar("d");
+
+    BDD_ID expected_id_A_AND_B = iteTest.ite(A_ID, B_ID, FALSE_ID);
+    BDD_ID expected_id_C_AND_D = iteTest.ite(C_ID, D_ID, FALSE_ID);
+    BDD_ID expected_id_output = iteTest.ite(expected_id_A_AND_B, TRUE_ID, expected_id_C_AND_D); //Inserts 2 new nodes
+
+    // With one argument
+    EXPECT_EQ(iteTest.coFactorTrue(TRUE_ID), TRUE_ID);
+    EXPECT_EQ(iteTest.coFactorTrue(FALSE_ID), FALSE_ID);
+
+    for (int i = 2; i < iteTest.uniqueTableSize()-4 ; i++){
+        EXPECT_EQ(iteTest.coFactorTrue(i), TRUE_ID);
+    }
+
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_A_AND_B), B_ID);    
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_C_AND_D), D_ID);
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_output-1), TRUE_ID);
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_output), expected_id_output-1);
+
+
+    // With two arguments
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_A_AND_B, A_ID), B_ID); 
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_C_AND_D, C_ID), D_ID);   
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_C_AND_D, A_ID), expected_id_C_AND_D);    
+    EXPECT_EQ(iteTest.coFactorTrue(expected_id_C_AND_D, B_ID), expected_id_C_AND_D);    
+
+}
+
+TEST_F(ITETest, co_factor_false_test){
+    BDD_ID A_ID = iteTest.createVar("a");
+    BDD_ID B_ID = iteTest.createVar("b");
+    BDD_ID C_ID = iteTest.createVar("c");
+    BDD_ID D_ID = iteTest.createVar("d");
+
+    BDD_ID expected_id_A_AND_B = iteTest.ite(A_ID, B_ID, FALSE_ID);
+    BDD_ID expected_id_C_AND_D = iteTest.ite(C_ID, D_ID, FALSE_ID);
+    BDD_ID expected_id_output = iteTest.ite(expected_id_A_AND_B, TRUE_ID, expected_id_C_AND_D); //Inserts 2 new nodes
+
+    // With one argument
+    EXPECT_EQ(iteTest.coFactorFalse(TRUE_ID), TRUE_ID);
+    EXPECT_EQ(iteTest.coFactorFalse(FALSE_ID), FALSE_ID);
+
+    for (int i = 2; i < iteTest.uniqueTableSize()-4 ; i++){
+        EXPECT_EQ(iteTest.coFactorFalse(i), FALSE_ID);
+    }
+
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_A_AND_B), FALSE_ID);
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_C_AND_D), FALSE_ID);
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_output-1), expected_id_C_AND_D);
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_output), expected_id_C_AND_D);
+
+    
+    // With two arguments
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_A_AND_B, A_ID), FALSE_ID); 
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_C_AND_D, C_ID), FALSE_ID);   
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_C_AND_D, A_ID), expected_id_C_AND_D);    
+    EXPECT_EQ(iteTest.coFactorFalse(expected_id_C_AND_D, B_ID), expected_id_C_AND_D);   
+
+}
 
 int main(int argc, char* argv[])
 {
