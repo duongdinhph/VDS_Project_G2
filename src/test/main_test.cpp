@@ -266,6 +266,15 @@ TEST_F(GateTest, and_test){
     EXPECT_EQ(D_ID, gateTest.unique_table[ite].high);
     EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+
+    // expected_id_A_AND_B * expected_id_C_AND_D
+    ite = gateTest.and2(expected_id_A_AND_B, expected_id_C_AND_D);
+    BDD_ID expected_id_output = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_output, ite);
+    EXPECT_EQ(expected_id_output-1, gateTest.unique_table[ite].high);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var); 
 }
 
 // OR
@@ -287,6 +296,15 @@ TEST_F(GateTest, or_test){
     EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite].high);
     EXPECT_EQ(D_ID, gateTest.unique_table[ite].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+
+    // expected_id_A_OR_B + expected_id_C_OR_D
+    ite = gateTest.or2(expected_id_A_OR_B, expected_id_C_OR_D);
+    BDD_ID expected_id_output = gateTest.uniqueTableSize()-1;
+
+    EXPECT_EQ(expected_id_output, ite);
+    EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_output-1, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var); 
 }
 
 // XOR
@@ -308,6 +326,31 @@ TEST_F(GateTest, xor_test){
     EXPECT_EQ(expected_id_C_XOR_D-1, gateTest.unique_table[ite].high);
     EXPECT_EQ(D_ID, gateTest.unique_table[ite].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+
+    // (expected_id_A_XOR_B) XOR (expected_id_C_XOR_D)
+    ite = gateTest.xor2(expected_id_A_XOR_B, expected_id_C_XOR_D);
+    BDD_ID expected_id_output = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_expected_id_C_XOR_D = expected_id_output-3;
+    BDD_ID expected_id_intermediate_1 = expected_id_output-2; //3-9-10
+    BDD_ID expected_id_intermediate_2 = expected_id_output-1; // 3-10-9
+
+    // Checking expected_id_intermediate_1 (3-9-10)
+    EXPECT_EQ(expected_id_intermediate_1, ite-2);
+    EXPECT_EQ(expected_id_C_XOR_D, gateTest.unique_table[ite-2].high);
+    EXPECT_EQ(neg_expected_id_C_XOR_D, gateTest.unique_table[ite-2].low);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite-2].top_var);
+
+    // Checking expected_id_intermediate_2 (3-10-9)
+    EXPECT_EQ(expected_id_intermediate_2, ite-1);
+    EXPECT_EQ(neg_expected_id_C_XOR_D, gateTest.unique_table[ite-1].high);
+    EXPECT_EQ(expected_id_C_XOR_D, gateTest.unique_table[ite-1].low);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite-1].top_var);
+
+    // Checking final node
+    EXPECT_EQ(expected_id_output, ite);
+    EXPECT_EQ(expected_id_intermediate_1, gateTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_intermediate_2, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var); 
 }
 
 // XNOR
@@ -329,6 +372,31 @@ TEST_F(GateTest, xnor_test){
     EXPECT_EQ(D_ID, gateTest.unique_table[ite].high);
     EXPECT_EQ(expected_id_C_XNOR_D-1, gateTest.unique_table[ite].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+
+    // (expected_id_A_XNOR_B) XNOR (expected_id_C_XNOR_D)
+    ite = gateTest.xnor2(expected_id_A_XNOR_B, expected_id_C_XNOR_D);
+    BDD_ID expected_id_output = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_expected_id_C_XNOR_D = expected_id_output-3;
+    BDD_ID expected_id_intermediate_1 = expected_id_output-2; //3-9-10
+    BDD_ID expected_id_intermediate_2 = expected_id_output-1; // 3-10-9
+
+    // Checking expected_id_intermediate_1 (3-9-10)
+    EXPECT_EQ(expected_id_intermediate_1, ite-2);
+    EXPECT_EQ(expected_id_C_XNOR_D, gateTest.unique_table[ite-2].high);
+    EXPECT_EQ(neg_expected_id_C_XNOR_D, gateTest.unique_table[ite-2].low);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite-2].top_var);
+
+    // Checking expected_id_intermediate_2 (3-10-9)
+    EXPECT_EQ(expected_id_intermediate_2, ite-1);
+    EXPECT_EQ(neg_expected_id_C_XNOR_D, gateTest.unique_table[ite-1].high);
+    EXPECT_EQ(expected_id_C_XNOR_D, gateTest.unique_table[ite-1].low);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite-1].top_var);
+
+    // Checking final node
+    EXPECT_EQ(expected_id_output, ite);
+    EXPECT_EQ(expected_id_intermediate_1, gateTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_intermediate_2, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var); 
 }
 
 // NOR
@@ -336,20 +404,46 @@ TEST_F(GateTest, nor_test){
     // a NOR b
     BDD_ID ite = gateTest.nor2(A_ID, B_ID);
     BDD_ID expected_id_A_NOR_B = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_B_ID = expected_id_A_NOR_B-1;
 
     EXPECT_EQ(expected_id_A_NOR_B, ite);
     EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].high);
-    EXPECT_EQ(expected_id_A_NOR_B-1, gateTest.unique_table[ite].low);
+    EXPECT_EQ(neg_B_ID, gateTest.unique_table[ite].low);
     EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var);
 
     // c NOR d
     ite = gateTest.nor2(C_ID, D_ID);
     BDD_ID expected_id_C_NOR_D = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_D_ID = expected_id_C_NOR_D-1;
 
     EXPECT_EQ(expected_id_C_NOR_D, ite);
     EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite].high);
-    EXPECT_EQ(expected_id_C_NOR_D-1, gateTest.unique_table[ite].low);
+    EXPECT_EQ(neg_D_ID, gateTest.unique_table[ite].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+
+    // (expected_id_A_NOR_B) NOR (expected_id_C_NOR_D)
+    ite = gateTest.nor2(expected_id_A_NOR_B, expected_id_C_NOR_D);
+    BDD_ID expected_id_output = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_expected_id_C_NOR_D = expected_id_output-2;
+    BDD_ID expected_id_intermediate = expected_id_output-1; // 3-10-0
+
+    // Checking neg_expected_id_C_NOR_D
+    EXPECT_EQ(neg_expected_id_C_NOR_D, ite-2);
+    EXPECT_EQ(neg_D_ID, gateTest.unique_table[ite-2].high);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite-2].low);
+    EXPECT_EQ(C_ID, gateTest.unique_table[ite-2].top_var);
+
+    // Checking intermediate node (3-10-0)
+    EXPECT_EQ(expected_id_intermediate, ite-1);
+    EXPECT_EQ(neg_expected_id_C_NOR_D, gateTest.unique_table[ite-1].high);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite-1].low);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite-1].top_var);
+
+    // Checking final node
+    EXPECT_EQ(expected_id_output, ite);
+    EXPECT_EQ(neg_expected_id_C_NOR_D, gateTest.unique_table[ite].high);
+    EXPECT_EQ(expected_id_intermediate, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var); 
 }
 
 // NAND
@@ -357,20 +451,46 @@ TEST_F(GateTest, nand_test){
     // a NAND b
     BDD_ID ite = gateTest.nand2(A_ID, B_ID);
     BDD_ID expected_id_A_NAND_B = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_B_ID = expected_id_A_NAND_B-1;
 
     EXPECT_EQ(expected_id_A_NAND_B, ite);
-    EXPECT_EQ(expected_id_A_NAND_B-1, gateTest.unique_table[ite].high);
+    EXPECT_EQ(neg_B_ID, gateTest.unique_table[ite].high);
     EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite].low);
     EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var);
 
     // c NAND d
     ite = gateTest.nand2(C_ID, D_ID);
     BDD_ID expected_id_C_NAND_D = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_D_ID = expected_id_C_NAND_D-1;
 
     EXPECT_EQ(expected_id_C_NAND_D, ite);
-    EXPECT_EQ(expected_id_C_NAND_D-1, gateTest.unique_table[ite].high);
+    EXPECT_EQ(neg_D_ID, gateTest.unique_table[ite].high);
     EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite].top_var); 
+
+    // (expected_id_A_NAND_B) NAND (expected_id_C_NAND_D)
+    ite = gateTest.nand2(expected_id_A_NAND_B, expected_id_C_NAND_D);
+    BDD_ID expected_id_output = gateTest.uniqueTableSize()-1;
+    BDD_ID neg_expected_id_C_NAND_D = expected_id_output-2;
+    BDD_ID expected_id_intermediate = expected_id_output-1; // 3-1-10
+
+    // Checking neg_expected_id_C_NAND_D
+    EXPECT_EQ(neg_expected_id_C_NAND_D, ite-2);
+    EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite-2].high);
+    EXPECT_EQ(neg_D_ID, gateTest.unique_table[ite-2].low);
+    EXPECT_EQ(C_ID, gateTest.unique_table[ite-2].top_var);
+
+    // Checking intermediate node (3-1-10)
+    EXPECT_EQ(expected_id_intermediate, ite-1);
+    EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite-1].high);
+    EXPECT_EQ(neg_expected_id_C_NAND_D, gateTest.unique_table[ite-1].low);
+    EXPECT_EQ(B_ID, gateTest.unique_table[ite-1].top_var);
+
+    // Checking final node
+    EXPECT_EQ(expected_id_output, ite);
+    EXPECT_EQ(expected_id_intermediate, gateTest.unique_table[ite].high);
+    EXPECT_EQ(neg_expected_id_C_NAND_D, gateTest.unique_table[ite].low);
+    EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var);
 }
 
 int main(int argc, char* argv[])
