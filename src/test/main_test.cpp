@@ -524,6 +524,23 @@ TEST_F(GateTest, find_nodes_test){
     EXPECT_EQ(nodes, reachable_nodes);
 }
 
+// Find Variables
+TEST_F(GateTest, find_var_test){
+    BDD_ID expected_id_A_AND_B = gateTest.and2(A_ID, B_ID);
+    std::set<BDD_ID> reachable_vars = {A_ID, B_ID};
+    std::set<BDD_ID> vars = {};
+
+    gateTest.findVars(expected_id_A_AND_B, vars);
+    EXPECT_EQ(vars, reachable_vars);
+
+    BDD_ID expected_id_C_XOR_D = gateTest.xor2(C_ID, D_ID);
+    reachable_vars = {C_ID, D_ID};
+    vars = {};
+
+    gateTest.findVars(expected_id_C_XOR_D, vars);
+    EXPECT_EQ(vars, reachable_vars);
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
