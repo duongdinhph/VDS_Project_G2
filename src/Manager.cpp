@@ -270,7 +270,11 @@ BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b)
     return ite (a, b, neg(b));
 }
 
-std::string Manager::getTopVarName(const BDD_ID &root){}
+std::string Manager::getTopVarName(const BDD_ID &root)
+{
+    BDD_ID top_var = unique_table[root].top_var;
+    return unique_table[top_var].label;
+}
 
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){}
 
