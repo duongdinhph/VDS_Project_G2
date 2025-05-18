@@ -497,8 +497,13 @@ TEST_F(GateTest, nand_test){
 TEST_F(TableTest, top_var_name_test){
     std::string labels[5] = {"FALSE", "TRUE", "a", "b", "c"};
 
-    for (int i = 0; i < tableTest.uniqueTableSize(); i ++){
+    for (int i = 0; i < 5; i ++){
         EXPECT_EQ(labels[i], tableTest.getTopVarName(i));
+    }
+
+    for (int i = 2; i < 5; i ++){
+        BDD_ID neg_id = tableTest.neg(i);
+        EXPECT_EQ(labels[i], tableTest.getTopVarName(neg_id));
     }
 }
 
