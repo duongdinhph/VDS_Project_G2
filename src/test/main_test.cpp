@@ -510,14 +510,14 @@ TEST_F(TableTest, top_var_name_test){
 // Find Nodes
 TEST_F(GateTest, find_nodes_test){
     BDD_ID expected_id_A_AND_B = gateTest.and2(A_ID, B_ID);
-    std::set<BDD_ID> reachable_nodes = {FALSE_ID, TRUE_ID, A_ID, B_ID, expected_id_A_AND_B};
+    std::set<BDD_ID> reachable_nodes = {FALSE_ID, TRUE_ID, B_ID, expected_id_A_AND_B};
     std::set<BDD_ID> nodes = {};
 
     gateTest.findNodes(expected_id_A_AND_B, nodes);
     EXPECT_EQ(nodes, reachable_nodes);
 
     BDD_ID expected_id_C_XOR_D = gateTest.xor2(C_ID, D_ID);
-    reachable_nodes = {FALSE_ID, TRUE_ID, C_ID, D_ID, expected_id_C_XOR_D-1, expected_id_C_XOR_D};
+    reachable_nodes = {FALSE_ID, TRUE_ID, D_ID, expected_id_C_XOR_D-1, expected_id_C_XOR_D};
     nodes = {};
 
     gateTest.findNodes(expected_id_C_XOR_D, nodes);
