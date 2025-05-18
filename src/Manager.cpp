@@ -1,5 +1,10 @@
 #include "Manager.h"
 #include <algorithm>
+#include <fstream>
+#include <set>
+#include <string>
+#include <vector>
+#include <iostream>
 
 using namespace ClassProject;
 
@@ -311,4 +316,49 @@ size_t Manager::uniqueTableSize()
     return no_nodes;
 }
 
-void Manager::visualizeBDD(std::string filepath, BDD_ID &root){}
+void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {
+    std::ofstream dot_file(filepath);
+    if (!dot_file.is_open()) {
+        std::cerr << "Failed to open file: " << filepath << std::endl;
+        return;
+    }
+
+    dot_file << "digraph BDD {\n";
+    dot_file << "  rankdir=TB;\n";
+    dot_file << "  size=\"8,10\";\n";
+    dot_file << "  node [shape = circle];\n";
+
+    std::set<BDD_ID> visited;
+    std::vector<BDD_ID> stack;
+    stack.push_back(root);
+
+    while (!stack.empty()) {
+        BDD_ID current = stack.back();
+        stack.pop_back();
+
+        if (visited.find(current) != visited.end()) continue;
+        visited.insert(current);
+
+        const Node &node = unique_table[current];
+
+        // Terminal nodes representation
+        if (node.top_var == 0 || node.top_var == 1) {
+            dot_file << "  " << current << " [shape=box, label=\"" << std::to_string(node.top_var) << "\"];\n";
+        } else {
+            dot_file << "  " << current << " [label=\"" << std::to_string(node.top_var) << "\"];\n";
+        }
+
+        // Connect to low and high
+        if (node.low != current) {  // Avoid self-loop
+            dot_file << "  " << current << " -> " << node.low << " [style=dotted label=\"0\"];\n";
+            stack.push_back(node.low);
+        }
+        if (node.high != current) {  // Avoid self-loop
+            dot_file << "  " << current << " -> " << node.high << " [label=\"1\"];\n";
+            stack.push_back(node.high);
+        }
+    }
+
+    dot_file << "}\n";
+    dot_file.close();
+}
