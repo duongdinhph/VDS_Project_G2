@@ -10,16 +10,16 @@
 #include <unordered_map>
 #include "Node.h"
 
-
 namespace ClassProject {
-
     class Manager : public ManagerInterface {
         public:
+            // Unique table is vector of nodes
             std::vector<Node> unique_table;
 
             BDD_ID TRUE_NODE = 1;
             BDD_ID FALSE_NODE = 0;
 
+            // Computed table is map with string representing fgh and BDD_ID shows respective ite node in unqiue table
             std::unordered_map<std::string, BDD_ID> computed_table;
 
             /**

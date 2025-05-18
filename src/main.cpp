@@ -17,9 +17,9 @@ int main(int argc, char* argv[])
     BDD_ID C_ID = bdd_manager.createVar("c");
     BDD_ID D_ID = bdd_manager.createVar("d");
 
+    // Implement function f = (a + b) * c * d
     BDD_ID A_OR_B = bdd_manager.or2(A_ID, B_ID);
     BDD_ID C_AND_D = bdd_manager.and2(C_ID, D_ID);
-
     BDD_ID F = bdd_manager.and2(A_OR_B, C_AND_D);
 
     bdd_manager.visualizeBDD("example_bdd.dot", F);
