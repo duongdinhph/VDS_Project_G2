@@ -276,7 +276,23 @@ std::string Manager::getTopVarName(const BDD_ID &root)
     return unique_table[top_var].label;
 }
 
-void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){}
+void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root)
+{
+    if (nodes_of_root.find(root) == nodes_of_root.end()) {
+        nodes_of_root.insert(root);
+    }
+    
+    if (root == TRUE_NODE || root == FALSE_NODE)
+    {
+        return;
+    }
+    else 
+    {
+        findNodes(unique_table[root].high, nodes_of_root);
+        findNodes(unique_table[root].low, nodes_of_root);
+        return;        
+    }
+}
 
 void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){}
 
