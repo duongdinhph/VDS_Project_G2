@@ -493,6 +493,15 @@ TEST_F(GateTest, nand_test){
     EXPECT_EQ(A_ID, gateTest.unique_table[ite].top_var);
 }
 
+// Top Variable Name
+TEST_F(TableTest, top_var_name_test){
+    std::string labels[5] = {"FALSE", "TRUE", "a", "b", "c"};
+
+    for (int i = 0; i < tableTest.uniqueTableSize(); i ++){
+        EXPECT_EQ(labels[i], tableTest.getTopVarName(i));
+    }
+}
+
 int main(int argc, char* argv[])
 {
     ::testing::InitGoogleTest(&argc, argv);
