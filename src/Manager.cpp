@@ -282,11 +282,7 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root)
         nodes_of_root.insert(root);
     }
     
-    if (root == TRUE_NODE || root == FALSE_NODE)
-    {
-        return;
-    }
-    else 
+    if (!isConstant(root))
     {
         findNodes(unique_table[root].high, nodes_of_root);
         findNodes(unique_table[root].low, nodes_of_root);
@@ -294,7 +290,19 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root)
     }
 }
 
-void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){}
+void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root)
+{
+    BDD_ID top_var = topVar(root);
+    if (!isConstant(root) && (vars_of_root.find(top_var) == vars_of_root.end())) {
+        vars_of_root.insert(top_var);
+    }
+    if (!isConstant(root))
+    {
+        findVars(unique_table[root].high, vars_of_root);
+        findVars(unique_table[root].low, vars_of_root);
+        return;
+    }
+}
 
 size_t Manager::uniqueTableSize()
 {
