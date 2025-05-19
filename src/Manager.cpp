@@ -88,11 +88,6 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
         return t;
     }
 
-    if (t == FALSE_NODE && e == TRUE_NODE)
-    {
-        return neg(i);
-    }
-
     // Check computed table
     std::string fgh = std::to_string(i) + "-" + std::to_string(t) + "-" + std::to_string(e);
 
@@ -144,7 +139,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     bool found = false;
 
     for (const auto& node : unique_table) {
-        if (node.label == unique_table_label) {
+        if (node.top_var == topVarOverall && node.high == High_ite && node.low == Low_ite) {
             found_id = node.id;
             found = true;
             break;
@@ -183,8 +178,7 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x)
     }
 
     BDD_ID True_CoFactor = coFactorTrue (coFactorTrue(f),x);
-    BDD_ID False_CoFactor = coFactorFalse (coFactorFalse(f),x);   
-    
+    BDD_ID False_CoFactor = coFactorTrue (coFactorFalse(f),x);   
     return ite(top_variable, True_CoFactor, False_CoFactor);
 }
 
@@ -205,7 +199,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x)
         return coFactorFalse(f);
     }
 
-    BDD_ID True_CoFactor = coFactorTrue (coFactorTrue(f),x);
+    BDD_ID True_CoFactor = coFactorFalse (coFactorTrue(f),x);
     BDD_ID False_CoFactor = coFactorFalse (coFactorFalse(f),x);   
     
     return ite(top_variable, True_CoFactor, False_CoFactor);
@@ -238,26 +232,7 @@ BDD_ID Manager::xor2(BDD_ID a, BDD_ID b)
 
 BDD_ID Manager::neg(BDD_ID a)
 {
-    BDD_ID a_low = unique_table[a].low;
-    BDD_ID a_high = unique_table[a].high;
-    BDD_ID a_top = unique_table[a].top_var;
-
-    std::string fgh = std::to_string(a) + "-" + std::to_string(a_low) + "-" + std::to_string(a_high);
-    std::string neg_a_label = "neg-" + std::to_string(a);
-
-    auto it = computed_table.find(fgh);
-    if (it != computed_table.end()) {
-        // Key exists, return the stored BDD_ID
-        return it->second;
-    }
-
-    BDD_ID table_size = unique_table.size();
-    Node neg_node(table_size, neg_a_label, a_low , a_high, a_top);
-    unique_table.push_back(neg_node);
-
-    computed_table[fgh] = table_size;
-
-    return table_size;
+    return ite (a, FALSE_NODE, TRUE_NODE);
 }
 
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b)

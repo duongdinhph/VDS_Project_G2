@@ -170,15 +170,6 @@ TEST_F(ITETest, ite_test){
     EXPECT_EQ(expected_id_intermediate_output, iteTest.unique_table[ite].high);
     EXPECT_EQ(expected_id_C_AND_D, iteTest.unique_table[ite].low);
     EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);   
-
-    // Negation of output node
-    ite = iteTest.ite(expected_id_output, FALSE_ID, TRUE_ID);
-    BDD_ID expected_id_neg_output = iteTest.uniqueTableSize()-1;
-
-    EXPECT_EQ(expected_id_neg_output, ite);
-    EXPECT_EQ(expected_id_C_AND_D, iteTest.unique_table[ite].high);
-    EXPECT_EQ(expected_id_intermediate_output, iteTest.unique_table[ite].low);
-    EXPECT_EQ(A_ID, iteTest.unique_table[ite].top_var);   
 }
 
 // Co-factor True
@@ -429,8 +420,8 @@ TEST_F(GateTest, nor_test){
 
     // Checking neg_expected_id_C_NOR_D
     EXPECT_EQ(neg_expected_id_C_NOR_D, ite-2);
-    EXPECT_EQ(neg_D_ID, gateTest.unique_table[ite-2].high);
-    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite-2].low);
+    EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite-2].high);
+    EXPECT_EQ(D_ID, gateTest.unique_table[ite-2].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite-2].top_var);
 
     // Checking intermediate node (3-10-0)
@@ -476,8 +467,8 @@ TEST_F(GateTest, nand_test){
 
     // Checking neg_expected_id_C_NAND_D
     EXPECT_EQ(neg_expected_id_C_NAND_D, ite-2);
-    EXPECT_EQ(TRUE_ID, gateTest.unique_table[ite-2].high);
-    EXPECT_EQ(neg_D_ID, gateTest.unique_table[ite-2].low);
+    EXPECT_EQ(D_ID, gateTest.unique_table[ite-2].high);
+    EXPECT_EQ(FALSE_ID, gateTest.unique_table[ite-2].low);
     EXPECT_EQ(C_ID, gateTest.unique_table[ite-2].top_var);
 
     // Checking intermediate node (3-1-10)
@@ -540,6 +531,95 @@ TEST_F(GateTest, find_var_test){
     gateTest.findVars(expected_id_C_XOR_D, vars);
     EXPECT_EQ(vars, reachable_vars);
 }
+
+
+TEST_F(BDDTest, CoFactorTrueTest) /* NOLINT */
+{
+
+    EXPECT_EQ(manager.coFactorTrue(false_id), false_id);
+    EXPECT_EQ(manager.coFactorTrue(true_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(a_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(b_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(a_and_b_id), b_id);
+    EXPECT_EQ(manager.coFactorTrue(c_or_d_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(f1_id), manager.or2(b_id, c_or_d_id));
+
+    EXPECT_EQ(manager.coFactorTrue(false_id, false_id), false_id);
+    EXPECT_EQ(manager.coFactorTrue(false_id, true_id), false_id);
+    EXPECT_EQ(manager.coFactorTrue(false_id, a_id), false_id);
+    EXPECT_EQ(manager.coFactorTrue(false_id, b_id), false_id);
+
+    EXPECT_EQ(manager.coFactorTrue(true_id, false_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(true_id, true_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(true_id, a_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(true_id, b_id), true_id);
+
+    EXPECT_EQ(manager.coFactorTrue(a_id, false_id), a_id);
+    EXPECT_EQ(manager.coFactorTrue(a_id, true_id), a_id);
+    EXPECT_EQ(manager.coFactorTrue(a_id, a_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(a_id, b_id), a_id);
+
+    EXPECT_EQ(manager.coFactorTrue(a_and_b_id, false_id), a_and_b_id);
+    EXPECT_EQ(manager.coFactorTrue(a_and_b_id, true_id), a_and_b_id);
+    EXPECT_EQ(manager.coFactorTrue(a_and_b_id, a_id), b_id);
+    EXPECT_EQ(manager.coFactorTrue(a_and_b_id, b_id), a_id);
+    EXPECT_EQ(manager.coFactorTrue(a_and_b_id, c_id), a_and_b_id);
+    EXPECT_EQ(manager.coFactorTrue(a_and_b_id, a_and_b_id), a_and_b_id);
+
+    EXPECT_EQ(manager.coFactorTrue(c_or_d_id, c_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(c_or_d_id, d_id), true_id);
+
+    EXPECT_EQ(manager.coFactorTrue(f1_id, a_id), manager.or2(b_id, c_or_d_id));
+
+    EXPECT_EQ(manager.coFactorTrue(f1_id, b_id), manager.or2(a_id, c_or_d_id));
+
+    EXPECT_EQ(manager.coFactorTrue(f1_id, c_id), true_id);
+    EXPECT_EQ(manager.coFactorTrue(f1_id, d_id), true_id);
+
+}
+
+TEST_F(BDDTest, CoFactorFalseTest) /* NOLINT */
+{
+
+    EXPECT_EQ(manager.coFactorFalse(false_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(true_id), true_id);
+    EXPECT_EQ(manager.coFactorFalse(a_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(b_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(a_and_b_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(c_or_d_id), d_id);
+    EXPECT_EQ(manager.coFactorFalse(f1_id), c_or_d_id);
+
+    EXPECT_EQ(manager.coFactorFalse(false_id, false_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(false_id, true_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(false_id, a_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(false_id, b_id), false_id);
+
+    EXPECT_EQ(manager.coFactorFalse(true_id, false_id), true_id);
+    EXPECT_EQ(manager.coFactorFalse(true_id, true_id), true_id);
+    EXPECT_EQ(manager.coFactorFalse(true_id, a_id), true_id);
+    EXPECT_EQ(manager.coFactorFalse(true_id, b_id), true_id);
+
+    EXPECT_EQ(manager.coFactorFalse(a_id, false_id), a_id);
+    EXPECT_EQ(manager.coFactorFalse(a_id, true_id), a_id);
+    EXPECT_EQ(manager.coFactorFalse(a_id, a_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(a_id, b_id), a_id);
+
+    EXPECT_EQ(manager.coFactorFalse(a_and_b_id, false_id), a_and_b_id);
+    EXPECT_EQ(manager.coFactorFalse(a_and_b_id, true_id), a_and_b_id);
+    EXPECT_EQ(manager.coFactorFalse(a_and_b_id, a_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(a_and_b_id, b_id), false_id);
+    EXPECT_EQ(manager.coFactorFalse(a_and_b_id, c_id), a_and_b_id);
+    EXPECT_EQ(manager.coFactorFalse(a_and_b_id, a_and_b_id), a_and_b_id);
+
+    EXPECT_EQ(manager.coFactorFalse(c_or_d_id, c_id), d_id);
+    EXPECT_EQ(manager.coFactorFalse(c_or_d_id, d_id), c_id);
+
+    EXPECT_EQ(manager.coFactorFalse(f1_id, a_id), c_or_d_id);
+    EXPECT_EQ(manager.coFactorFalse(f1_id, b_id), c_or_d_id);
+    EXPECT_EQ(manager.coFactorFalse(f1_id, c_id), manager.or2(a_and_b_id, d_id));
+    EXPECT_EQ(manager.coFactorFalse(f1_id, d_id), manager.or2(a_and_b_id, c_id));
+}
+
 
 int main(int argc, char* argv[])
 {
