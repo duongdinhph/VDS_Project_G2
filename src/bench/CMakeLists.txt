@@ -6,7 +6,7 @@ add_library(Benchmark
         skip_parser.hpp)
 
 #Boost
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+find_package(Boost)
 
 #Executable
 add_executable(VDSProject_bench main_bench.cpp)
