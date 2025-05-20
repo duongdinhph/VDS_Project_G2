@@ -15,6 +15,12 @@ Manager::Manager()
     
     unique_table.push_back(false_node);
     unique_table.push_back(true_node);
+
+    std::string false_label = "0-0-0";
+    std::string true_label  = "1-1-1";
+
+    unique_table_hashmap[false_label] = FALSE_NODE;
+    unique_table_hashmap[true_label] = TRUE_NODE;
 }
 
 BDD_ID Manager::createVar(const std::string &label)
@@ -22,6 +28,9 @@ BDD_ID Manager::createVar(const std::string &label)
     BDD_ID table_size = unique_table.size();
     Node new_node(label, TRUE_NODE, FALSE_NODE, table_size);
     unique_table.push_back(new_node);
+
+    std::string new_node_label = std::to_string(TRUE_NODE) + "-" + std::to_string(FALSE_NODE) + "-" + std::to_string(table_size);
+    unique_table_hashmap[new_node_label] = table_size;
 
     return table_size;
 }
@@ -117,21 +126,19 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
         computed_table[fgh] = High_ite;
         return High_ite;
     }
-  
-    // Check if entry with same top, high, low already exists in unique table
-    for (size_t i = 0; i < unique_table.size(); ++i) {
-        const auto& node = unique_table[i];
-        if (node.top_var == topVarOverall && node.high == High_ite && node.low == Low_ite) {
-            computed_table[fgh] = i;
-            return i;
-        }
+
+    std::string new_node_label = std::to_string(High_ite) + "-" + std::to_string(Low_ite) + "-" + std::to_string(topVarOverall);
+    auto node_found = unique_table_hashmap.find(new_node_label);
+    if (node_found != unique_table_hashmap.end()) {
+        // Key exists, return the stored BDD_ID
+        return node_found->second;
     }
 
-    std::string unique_table_label = std::to_string(topVarOverall) + "-" + std::to_string(High_ite) + "-" + std::to_string(Low_ite);
-
     BDD_ID table_size = unique_table.size();
-    Node new_node(unique_table_label, High_ite, Low_ite, topVarOverall);
+    Node new_node(new_node_label, High_ite, Low_ite, topVarOverall);
     unique_table.push_back(new_node);
+
+    unique_table_hashmap[new_node_label] = table_size;
 
     computed_table[fgh] = table_size;
     return table_size;
