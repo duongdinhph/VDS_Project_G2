@@ -61,7 +61,6 @@ TEST_F(TableTest, check_create_var_test){
     std::string labels[3] = {"a", "b", "c"};
 
     for (int i = 2; i <= 4; i++){
-        EXPECT_EQ(i,tableTest.unique_table[i].id);
         EXPECT_EQ(labels[i - 2],tableTest.unique_table[i].label);
         EXPECT_EQ(TRUE_ID,tableTest.unique_table[i].high);
         EXPECT_EQ(FALSE_ID,tableTest.unique_table[i].low);
@@ -74,8 +73,7 @@ TEST_F(TableTest, constant_test){
     bool output[5] = {true, true, false, false, false};
 
     for (int i = 0; i <= 4; i++){
-        BDD_ID current_id = tableTest.unique_table[i].id;
-        EXPECT_EQ(output[i], tableTest.isConstant(current_id));   
+        EXPECT_EQ(output[i], tableTest.isConstant(i));   
     }
 }
 
@@ -84,16 +82,14 @@ TEST_F(TableTest, variable_test){
     bool output[5] = {false, false, true, true, true};
 
     for (int i = 0; i <= 4; i++){
-        BDD_ID current_id = tableTest.unique_table[i].id;
-        EXPECT_EQ(output[i], tableTest.isVariable(current_id));   
+        EXPECT_EQ(output[i], tableTest.isVariable(i));   
     }
 }
 
 /// Top Variable
 TEST_F(TableTest, top_var_test){
     for (int i = 2; i <= 4; i++){
-        BDD_ID current_id = tableTest.unique_table[i].id;
-        EXPECT_EQ(i, tableTest.topVar(current_id));   
+        EXPECT_EQ(i, tableTest.topVar(i));   
     }
 }
 

@@ -10,8 +10,8 @@ using namespace ClassProject;
 
 Manager::Manager()
 {
-    Node false_node(FALSE_NODE,"FALSE",FALSE_NODE,FALSE_NODE,FALSE_NODE);
-    Node true_node(TRUE_NODE,"TRUE",TRUE_NODE,TRUE_NODE,TRUE_NODE);
+    Node false_node("FALSE",FALSE_NODE,FALSE_NODE,FALSE_NODE);
+    Node true_node("TRUE",TRUE_NODE,TRUE_NODE,TRUE_NODE);
     
     unique_table.push_back(false_node);
     unique_table.push_back(true_node);
@@ -20,7 +20,7 @@ Manager::Manager()
 BDD_ID Manager::createVar(const std::string &label)
 {
     BDD_ID table_size = unique_table.size();
-    Node new_node(table_size, label, TRUE_NODE, FALSE_NODE, table_size);
+    Node new_node(label, TRUE_NODE, FALSE_NODE, table_size);
     unique_table.push_back(new_node);
 
     return table_size;
@@ -28,36 +28,22 @@ BDD_ID Manager::createVar(const std::string &label)
 
 const BDD_ID &Manager::True()
 {
-    return unique_table[TRUE_NODE].id;
+    return TRUE_NODE;
 }
 
 const BDD_ID &Manager::False()
 {
-    return unique_table[FALSE_NODE].id;
+    return FALSE_NODE;
 }
 
 bool Manager::isConstant(BDD_ID f)
 {
-    if (unique_table[f].id == FALSE_NODE || unique_table[f].id == TRUE_NODE)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    } 
+    return (f == FALSE_NODE || f == TRUE_NODE); 
 }
 
 bool Manager::isVariable(BDD_ID x)
 {
-    if (unique_table[x].high == TRUE_NODE && unique_table[x].low == FALSE_NODE)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    } 
+    return (unique_table[x].high == TRUE_NODE && unique_table[x].low == FALSE_NODE);
 }
 
 BDD_ID Manager::topVar(BDD_ID f)
@@ -131,44 +117,31 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
         computed_table[fgh] = High_ite;
         return High_ite;
     }
-
-    std::string unique_table_label = std::to_string(topVarOverall) + "-" + std::to_string(High_ite) + "-" + std::to_string(Low_ite);
-    
+  
     // Check if entry with same top, high, low already exists in unique table
-    BDD_ID found_id = 0;
-    bool found = false;
-
-    for (const auto& node : unique_table) {
+    for (size_t i = 0; i < unique_table.size(); ++i) {
+        const auto& node = unique_table[i];
         if (node.top_var == topVarOverall && node.high == High_ite && node.low == Low_ite) {
-            found_id = node.id;
-            found = true;
-            break;
+            computed_table[fgh] = i;
+            return i;
         }
     }
 
-    if (found) {
-        computed_table[fgh] = found_id;
-        return found_id;
+    std::string unique_table_label = std::to_string(topVarOverall) + "-" + std::to_string(High_ite) + "-" + std::to_string(Low_ite);
 
-    } else {
-        BDD_ID table_size = unique_table.size();
-        Node new_node(table_size, unique_table_label, High_ite, Low_ite, topVarOverall);
-        unique_table.push_back(new_node);
+    BDD_ID table_size = unique_table.size();
+    Node new_node(unique_table_label, High_ite, Low_ite, topVarOverall);
+    unique_table.push_back(new_node);
 
-        computed_table[fgh] = table_size;
-        return table_size;
-    }
+    computed_table[fgh] = table_size;
+    return table_size;
 }
 
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x)
 {
     BDD_ID top_variable = topVar(f);
 
-    if (isConstant(f) || isConstant(x))
-    {
-        return f;
-    }
-    if (top_variable > x)
+    if (isConstant(f) || isConstant(x) || top_variable > x)
     {
         return f;
     }
@@ -186,11 +159,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x)
 {
     BDD_ID top_variable = topVar(f);
 
-    if (isConstant(f) || isConstant(x))
-    {
-        return f;
-    }
-    if (top_variable > x)
+    if (isConstant(f) || isConstant(x) || top_variable > x)
     {
         return f;
     }
