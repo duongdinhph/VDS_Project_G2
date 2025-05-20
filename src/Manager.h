@@ -15,6 +15,7 @@ namespace ClassProject {
         public:
             // Unique table is vector of nodes
             std::vector<Node> unique_table;
+            std::unordered_map<std::string, BDD_ID> unique_table_hashmap;
 
             BDD_ID TRUE_NODE = 1;
             BDD_ID FALSE_NODE = 0;
