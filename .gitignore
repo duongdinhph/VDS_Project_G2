@@ -1,1 +1,4 @@
 gtest/
+build/
+.vscode/
+results/
