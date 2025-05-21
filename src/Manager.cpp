@@ -63,25 +63,10 @@ BDD_ID Manager::topVar(BDD_ID f)
 BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
 {
     // Terminal Cases
-    if (i == TRUE_NODE)
-    {
-        return t;
-    }
-
-    if (i == FALSE_NODE)
-    {
-        return e;
-    }
-
-    if (t == TRUE_NODE && e == FALSE_NODE)
-    {
-        return i;
-    }
-
-    if (t == e)
-    {
-        return t;
-    }
+    if (i == TRUE_NODE)  return t;
+    if (i == FALSE_NODE) return e;
+    if (t == TRUE_NODE && e == FALSE_NODE) return i;
+    if (t == e) return t;
 
     // Check computed table
     std::string fgh = std::to_string(i) + "-" + std::to_string(t) + "-" + std::to_string(e);
@@ -131,6 +116,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     auto node_found = unique_table_hashmap.find(new_node_label);
     if (node_found != unique_table_hashmap.end()) {
         // Key exists, return the stored BDD_ID
+        computed_table[fgh] = node_found->second;
         return node_found->second;
     }
 
@@ -139,8 +125,8 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e)
     unique_table.push_back(new_node);
 
     unique_table_hashmap[new_node_label] = table_size;
-
     computed_table[fgh] = table_size;
+    
     return table_size;
 }
 
