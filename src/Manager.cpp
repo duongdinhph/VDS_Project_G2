@@ -220,30 +220,34 @@ std::string Manager::getTopVarName(const BDD_ID &root)
 
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root)
 {
-    if (nodes_of_root.find(root) == nodes_of_root.end()) {
-        nodes_of_root.insert(root);
-    }
+    auto [_, inserted] = nodes_of_root.insert(root);
+    if (!inserted)
+        return; // Exit early if top_var was already in the set
     
     if (!isConstant(root))
     {
         findNodes(unique_table[root].high, nodes_of_root);
         findNodes(unique_table[root].low, nodes_of_root);
-        return;        
     }
+
+    return;        
 }
 
 void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root)
-{
-    BDD_ID top_var = topVar(root);
-    if (!isConstant(root) && (vars_of_root.find(top_var) == vars_of_root.end())) {
-        vars_of_root.insert(top_var);
-    }
+{    
     if (!isConstant(root))
     {
+        BDD_ID top_var = topVar(root);
+
+        auto [_, inserted] = vars_of_root.insert(top_var);
+        if (!inserted)
+            return; // Exit early if top_var was already in the set
+
         findVars(unique_table[root].high, vars_of_root);
         findVars(unique_table[root].low, vars_of_root);
-        return;
     }
+
+    return;
 }
 
 size_t Manager::uniqueTableSize()
