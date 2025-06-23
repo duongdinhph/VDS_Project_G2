@@ -2,6 +2,7 @@
 #define VDSPROJECT_REACHABILITY_H
 
 #include "ReachabilityInterface.h"
+#include <stdexcept>
 
 namespace ClassProject {
 
@@ -24,12 +25,17 @@ namespace ClassProject {
     private:
         int numStates;
         int numInputs;
+        
         std::vector<BDD_ID> stateBits;
         std::vector<BDD_ID> nextStateBits;
         std::vector<BDD_ID> inputBits;
         std::vector<BDD_ID> transitionFunctions;
-        
         std::vector<bool> initState;
+        std::vector<BDD_ID> stepReachableStateSet;
+
+        bool reachableReady;
+        BDD_ID reachableStateSet;
+        bool isInSet(const BDD_ID &root, const std::vector<bool> &stateVector);
     };
 
 }
