@@ -23,6 +23,7 @@ namespace ClassProject {
     
     private:
         int numStates;
+        int numInputs;
         std::vector<BDD_ID> stateBits;
         std::vector<BDD_ID> nextStateBits;
         std::vector<BDD_ID> inputBits;
