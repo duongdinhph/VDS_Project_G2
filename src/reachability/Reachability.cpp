@@ -6,8 +6,13 @@ namespace ClassProject {
     Reachability::Reachability(unsigned int stateSize, unsigned int inputSize)
      : ReachabilityInterface(stateSize, inputSize)
     {
+        if (stateSize == 0) {
+            throw std::runtime_error("stateSize must be greater than zero");
+        }
+
         numStates = stateSize;
         numInputs = inputSize;
+
         // init BDD for states and inputs
         // init State
         for(int i = 0; i++; i < stateSize)
@@ -36,39 +41,161 @@ namespace ClassProject {
 
         // init State
         setInitState(initState);
+
+        reachableReady  = false;
     }
 
-    // Destructor (defaulted, so not needed unless you want to do something special)
     Reachability::~Reachability() = default;
 
     // Return state BDD_IDs
-    const std::vector<BDD_ID>& Reachability::getStates() const {
+    const std::vector<BDD_ID>& Reachability::getStates() const 
+    {
         return stateBits;
     }
 
     // Return input BDD_IDs
-    const std::vector<BDD_ID>& Reachability::getInputs() const {
+    const std::vector<BDD_ID>& Reachability::getInputs() const 
+    {
         return inputBits;
     }
 
     // Check whether a given state is reachable
-    bool Reachability::isReachable(const std::vector<bool>& stateVector) {
-        
+    bool Reachability::isReachable(const std::vector<bool>& stateVector) 
+    {
+        if(stateVector.size() != numStates) 
+        {
+            throw std::runtime_error("size does not match with number of state bits");
+        }
+
+        if(!reachableReady)
+        {
+            // 3. compute the BDD for the transition relation
+            BDD_ID transitionRelation = TRUE_NODE;
+            for(int i = 0; i < numStates; i++)
+            {
+                // get BDD of next state i
+                BDD_ID _s_i = nextStateBits.at(i);
+            
+                // get BDD of transition function
+                BDD_ID delta_i = transitionFunctions.at(i);
+
+                // update transition relation
+                transitionRelation = and2(
+                    transitionRelation, 
+                    or2(
+                        and2(_s_i, delta_i),
+                        and2(neg(_s_i), neg(delta_i))
+                    )
+                );
+            }
+
+            // 4. compute BDD for the characteristic function of the initial state
+            BDD_ID c_s = TRUE_NODE;
+            for(int i = 0; i < numStates; i++)
+            {
+                // get BDD of current state i
+                BDD_ID s_i = stateBits.at(i);
+
+                // update characteristic function
+                if(initState[i])
+                {
+                    c_s = and2( c_s, xnor2( s_i, FALSE_NODE));
+                } else{
+                    c_s = and2( c_s, xnor2( s_i, TRUE_NODE));
+                }
+            }
+
+            // 5. 
+            BDD_ID c_Rit = c_s;
+            stepReachableStateSet.push_back(c_Rit);
+
+            // 6.
+            BDD_ID c_R = 0;
+            while(c_R != c_Rit)
+            {
+                c_R = c_Rit;
+
+                // 7. compute the BDD for img(s')
+                BDD_ID img_s_ = and2(c_R, transitionRelation);
+                for(int i = 0; i < numStates; i++)
+                {
+                    BDD_ID s_i = stateBits.at(i);
+                    img_s_ = or2( coFactorTrue( img_s_, s_i), coFactorFalse( img_s_, s_i));
+                }
+                for (int i = 0; i < numInputs; i++)
+                {
+                    BDD_ID input_i = inputBits.at(i);
+                    img_s_ = or2( coFactorTrue( img_s_, input_i), coFactorFalse( img_s_, input_i));
+                }
+
+                // 8. compute the BDD for img(s) (swap s' by s in img(s'))
+                BDD_ID img_s = img_s_;
+                for(int i = 0; i < numStates; i++)
+                {
+                    BDD_ID s_i = stateBits.at(i);
+                    BDD_ID _s_i = nextStateBits.at(i);
+                    img_s = and2( img_s, xnor2( s_i, _s_i));
+                }
+                for(int i = 0; i < numStates; i++)
+                {
+                    BDD_ID _s_i = nextStateBits.at(i);
+                    img_s = or2( coFactorTrue( img_s, _s_i), coFactorFalse( img_s, _s_i));
+                }
+                
+                // 9. compute the BDD for the new c_Rit
+                c_Rit = or2(c_R, img_s);     
+                stepReachableStateSet.push_back(c_Rit);    
+            }
+
+            reachableStateSet = c_R;
+            reachableReady = true;
+        }
+        return isInSet(reachableStateSet, stateVector);
     }
 
     // Return shortest path from initial state to target state (in steps)
-    int Reachability::stateDistance(const std::vector<bool>& stateVector) {
-        // To be implemented
+    int Reachability::stateDistance(const std::vector<bool>& stateVector) 
+    {
+        if(stateVector.size() != numStates) 
+        {
+            throw std::runtime_error("size does not match with number of state bits");
+        }
+
+        if(!isReachable(stateVector)) return -1;
+        for(int i = 0; i < stepReachableStateSet.size(); i++)
+        {
+            if(isInSet(stepReachableStateSet[i], stateVector)) 
+                return i;
+        }
     }
 
     // Set transition function for each state bit
-    void Reachability::setTransitionFunctions(const std::vector<BDD_ID>& transitionFunctions) {
+    void Reachability::setTransitionFunctions(const std::vector<BDD_ID>& transitionFunctions) 
+    {
         this -> transitionFunctions = transitionFunctions;
     }
 
     // Set a new initial state
-    void Reachability::setInitState(const std::vector<bool>& stateVector) {
+    void Reachability::setInitState(const std::vector<bool>& stateVector) 
+    {
         initState = stateVector;
+    }
+
+    // check if a state is in a set
+    bool Reachability::isInSet(const BDD_ID &root, const std::vector<bool> &stateVector)
+    {
+        if(isConstant(root))
+        {
+            if(root == TRUE_NODE) return true;
+            else return false;
+        }
+
+        BDD_ID _topVar = topVar(root);
+
+        if(stateVector[_topVar - 2])            // the 2 first elements are constant
+            return isInSet(coFactorTrue(root), stateVector);
+        else 
+            return isInSet(coFactorFalse(root), stateVector);
     }
 
 }
