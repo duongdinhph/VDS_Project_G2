@@ -15,7 +15,7 @@ namespace ClassProject {
 
         // init BDD for states and inputs
         // init State
-        for(int i = 0; i++; i < stateSize)
+        for(int i = 0; i < stateSize; i++)
         {
             BDD_ID bitState = createVar("s" + std::to_string(i));
             BDD_ID nextBitState = createVar("s'" + std::to_string(i));
