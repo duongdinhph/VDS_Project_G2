@@ -45,7 +45,11 @@ namespace ClassProject {
         reachableReady  = false;
     }
 
-    Reachability::~Reachability() = default;
+    Reachability::Reachability(unsigned int stateSize)
+    : Reachability(stateSize, 0)
+    {
+
+    }
 
     // Return state BDD_IDs
     const std::vector<BDD_ID>& Reachability::getStates() const 
@@ -156,17 +160,19 @@ namespace ClassProject {
     // Return shortest path from initial state to target state (in steps)
     int Reachability::stateDistance(const std::vector<bool>& stateVector) 
     {
-        if(stateVector.size() != numStates) 
-        {
+        if (stateVector.size() != numStates) {
             throw std::runtime_error("size does not match with number of state bits");
         }
 
-        if(!isReachable(stateVector)) return -1;
-        for(int i = 0; i < stepReachableStateSet.size(); i++)
-        {
-            if(isInSet(stepReachableStateSet[i], stateVector)) 
+        if (!isReachable(stateVector)) return -1;
+
+        for (int i = 0; i < stepReachableStateSet.size(); i++) {
+            if (isInSet(stepReachableStateSet[i], stateVector)) 
                 return i;
         }
+
+        // This should never happen if isReachable() worked correctly
+        throw std::logic_error("state is reachable but not found in stepReachableStateSet");
     }
 
     // Set transition function for each state bit

@@ -10,10 +10,8 @@ namespace ClassProject {
     public:
         // Constructor
         Reachability(unsigned int stateSize, unsigned int inputSize);
-
-        // Destructor 
-        ~Reachability() override = default;
-
+        Reachability(unsigned int stateSize);
+        
         // Implementations of the virtual function
         const std::vector<BDD_ID> &getStates() const override;
         const std::vector<BDD_ID> &getInputs() const override;
