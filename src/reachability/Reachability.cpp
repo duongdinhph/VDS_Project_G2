@@ -18,13 +18,17 @@ namespace ClassProject {
         for(int i = 0; i < stateSize; i++)
         {
             BDD_ID bitState = createVar("s" + std::to_string(i));
-            BDD_ID nextBitState = createVar("s'" + std::to_string(i));
             stateBits.push_back(bitState);
-            nextStateBits.push_back(nextBitState);
             initState.push_back(false);
         }
 
-        for(int i = 0; i++; i < inputSize)
+        for(int i = 0; i < stateSize; i++)
+        {
+            BDD_ID nextBitState = createVar("s'" + std::to_string(i));
+            nextStateBits.push_back(nextBitState);
+        }
+
+        for(int i = 0; i < inputSize; i++)
         {
             BDD_ID bitInput = createVar("i" + std::to_string(i));
             inputBits.push_back(bitInput);
@@ -32,7 +36,7 @@ namespace ClassProject {
 
         // init transition function (identity function)
         std::vector<BDD_ID> initTransitionFunctions;
-        for(int i = 0; i++; i < stateSize)
+        for(int i = 0; i < stateSize; i++)
         {
             BDD_ID tempState = stateBits.at(i);
             initTransitionFunctions.push_back(tempState);
@@ -48,7 +52,6 @@ namespace ClassProject {
     Reachability::Reachability(unsigned int stateSize)
     : Reachability(stateSize, 0)
     {
-
     }
 
     // Return state BDD_IDs
