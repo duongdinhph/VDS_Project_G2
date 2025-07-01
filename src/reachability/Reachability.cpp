@@ -7,7 +7,7 @@ namespace ClassProject {
      : ReachabilityInterface(stateSize, inputSize)
     {
         if (stateSize == 0) {
-            throw std::runtime_error("stateSize must be greater than zero");
+            throw std::runtime_error("StateSize must be greater than zero");
         }
 
         numStates = stateSize;
@@ -22,16 +22,16 @@ namespace ClassProject {
             initState.push_back(false);
         }
 
-        for(int i = 0; i < stateSize; i++)
-        {
-            BDD_ID nextBitState = createVar("s'" + std::to_string(i));
-            nextStateBits.push_back(nextBitState);
-        }
-
         for(int i = 0; i < inputSize; i++)
         {
             BDD_ID bitInput = createVar("i" + std::to_string(i));
             inputBits.push_back(bitInput);
+        }
+
+        for(int i = 0; i < stateSize; i++)
+        {
+            BDD_ID nextBitState = createVar("s'" + std::to_string(i));
+            nextStateBits.push_back(nextBitState);
         }
 
         // init transition function (identity function)
@@ -47,11 +47,6 @@ namespace ClassProject {
         setInitState(initState);
 
         reachableReady  = false;
-    }
-
-    Reachability::Reachability(unsigned int stateSize)
-    : Reachability(stateSize, 0)
-    {
     }
 
     // Return state BDD_IDs
@@ -71,7 +66,7 @@ namespace ClassProject {
     {
         if(stateVector.size() != numStates) 
         {
-            throw std::runtime_error("size does not match with number of state bits");
+            throw std::runtime_error("Size does not match with number of state bits");
         }
 
         if(!reachableReady)
@@ -106,9 +101,9 @@ namespace ClassProject {
                 // update characteristic function
                 if(initState[i])
                 {
-                    c_s = and2( c_s, xnor2( s_i, FALSE_NODE));
-                } else{
                     c_s = and2( c_s, xnor2( s_i, TRUE_NODE));
+                } else{
+                    c_s = and2( c_s, xnor2( s_i, FALSE_NODE));
                 }
             }
 
@@ -164,7 +159,7 @@ namespace ClassProject {
     int Reachability::stateDistance(const std::vector<bool>& stateVector) 
     {
         if (stateVector.size() != numStates) {
-            throw std::runtime_error("size does not match with number of state bits");
+            throw std::runtime_error("Size does not match with number of state bits");
         }
 
         if (!isReachable(stateVector)) return -1;
@@ -175,19 +170,46 @@ namespace ClassProject {
         }
 
         // This should never happen if isReachable() worked correctly
-        throw std::logic_error("state is reachable but not found in stepReachableStateSet");
+        throw std::logic_error("State is reachable but not found in stepReachableStateSet");
     }
 
     // Set transition function for each state bit
     void Reachability::setTransitionFunctions(const std::vector<BDD_ID>& transitionFunctions) 
     {
+        if(transitionFunctions.size() != numStates) {
+            throw std::runtime_error("The number of transition functions does not match with that of state bits");
+        }
+
+        for(int i = 0; i < numStates; i++)
+        {
+            BDD_ID tempRoot = transitionFunctions[i];
+
+            // case 1: the root does not exist in the unique table
+            if(tempRoot >= uniqueTableSize())
+                    throw std::runtime_error("An unknown ID is provided");
+
+            // case 2: the BDD contains an unknown variables 
+            std::set<BDD_ID> setVars;
+            findVars(tempRoot, setVars);
+            for(const BDD_ID& var : setVars) {
+                if( (var < 2) || (var > (numStates + numInputs + 1)))
+                    throw std::runtime_error("An unknown ID is provided");
+            }
+        }
+
         this -> transitionFunctions = transitionFunctions;
+        reachableReady = false;
     }
 
     // Set a new initial state
     void Reachability::setInitState(const std::vector<bool>& stateVector) 
     {
+        if (stateVector.size() != numStates) {
+            throw std::runtime_error("Size does not match with number of state bits");
+        }
+
         initState = stateVector;
+        reachableReady = false;
     }
 
     // check if a state is in a set
